@@ -80,7 +80,6 @@ blue_diff = abs(average_blue_waiting_time - maximum_blue_waiting_time)
 # 输出结果
 print("只给定黄色客户：平均等待时间 =", average_yellow_waiting_time, "，最大等待时间 =", maximum_yellow_waiting_time)
 print("只考虑红色顾客：平均队列长度 =", average_red_queue_length, "，最大队列长度 =", maximum_red_queue_length)
-# 输出蓝色客户的结果（省略）
 
 # 比较差异并输出最接近的类型
 if yellow_diff <= min(red_diff,blue_diff):
