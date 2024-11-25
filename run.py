@@ -15,7 +15,7 @@ beta_blue = 1
 
 def simulate(alpha, beta, row = 200):
     # 模拟的时间步数
-    num_steps = 10#10000
+    num_steps = 10000#10
     # 存储每个客户的到达时间和处理时间
     arrival_times = []
     processing_times = []
@@ -25,7 +25,7 @@ def simulate(alpha, beta, row = 200):
     waiting_times = []
     total_waiting_time = 0
     queue = []
-
+    finish_times = [] #每个客户完成的时间
     for _ in range(num_steps):
         # 生成客户的到达时间
         arrival_time = -np.log(1 - random.random()) * 100
@@ -36,23 +36,31 @@ def simulate(alpha, beta, row = 200):
         else:
             total_waiting_time = 0
             queue_length = max(queue_length-1,0)
-        waiting_time = total_waiting_time
+        waiting_time = total_waiting_time # 等待时间
+        waiting_times.append(waiting_time)
+
         arrival_times.append(current_time + arrival_time) #叠加
+
+        k = len(finish_times)-1
+        while finish_times and k>=0 and current_time+arrival_time<=finish_times[k]:
+            k -= 1
+        queue_length = len(finish_times)-k-1
+        queue.append(queue_length)
 
         # 生成客户的处理时间
         x = random.random()
-        processing_time = row * (x ** (alpha - 1)) / ((1 - x) ** (beta - 1))
+        processing_time = row * (x ** (alpha - 1)) * ((1 - x) ** (beta - 1))
         processing_times.append(processing_time)
-        
+        finish_time = current_time+arrival_time+processing_time
+        finish_times.append(finish_time)
+
         total_waiting_time += processing_time
         # 更新当前时间和队列长度
-        current_time = max(current_time, arrival_time)
-        queue_length = max(queue_length, 0)
-        queue.append(queue_length)
-
-        # 等待时间
-        waiting_times.append(waiting_time)
-
+        current_time = current_time + arrival_time
+ 
+    # print(arrival_times)
+    # print(processing_times)
+    # print(queue)
     average_wt = sum(waiting_times)/len(waiting_times)
     maximum_wt = max(waiting_times)
 
